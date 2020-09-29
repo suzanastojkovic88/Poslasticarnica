@@ -7,23 +7,23 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import poslasticarnica.model.Korisnik;
+import poslasticarnica.model.SlatkaPoruka;
 import poslasticarnica.pomocne_klase.PomocnaKlasa;
 
-public class KorisnikFajl {
+public class SlatkaPorukaFajl {
 
-	public static ArrayList<Korisnik> korisnici = new ArrayList<Korisnik>();
+	public static ArrayList<SlatkaPoruka> poruke = new ArrayList<SlatkaPoruka>();
 	public static boolean ocitan = false;
 
 	public static void pisanjeUFajl() {
 		try {
-			String putanja = PomocnaKlasa.putanjaDoFajla("korisnici.txt");
+			String putanja = PomocnaKlasa.putanjaDoFajla("poruke.txt");
 			File brisanjeKreiranje = new File(putanja);
 			if (!brisanjeKreiranje.exists())
 				brisanjeKreiranje.createNewFile();
 			PrintWriter pw = new PrintWriter(new FileWriter(putanja));
-			for (Korisnik korisnik : korisnici) {
-				pw.println(korisnik.zaFajl());
+			for (SlatkaPoruka sp : poruke) {
+				pw.println(sp.zaFajl());
 			}
 			pw.flush();
 			pw.close();
@@ -37,8 +37,8 @@ public class KorisnikFajl {
 			return;
 		}
 		try {
-			korisnici.clear();
-			String putanja = PomocnaKlasa.putanjaDoFajla("korisnici.txt");
+			poruke.clear();
+			String putanja = PomocnaKlasa.putanjaDoFajla("poruke.txt");
 			File brisanjeKreiranje = new File(putanja);
 			if (!brisanjeKreiranje.exists()) {
 				System.out.println("Nepostojeci fajl");
@@ -47,8 +47,8 @@ public class KorisnikFajl {
 			BufferedReader br = new BufferedReader(new FileReader(putanja));
 			String string;
 			while ((string = br.readLine()) != null) {
-				Korisnik korisnik = new Korisnik(string);
-				korisnici.add(korisnik);
+				SlatkaPoruka sp = new SlatkaPoruka(string);
+				poruke.add(sp);
 			}
 			ocitan = true;
 			br.close();
@@ -58,14 +58,31 @@ public class KorisnikFajl {
 
 	}
 
-	public static Korisnik pretragaPoKorisnickomImenu(String korisnickoIme) {
-		for (Korisnik korisnik : korisnici) {
-			if (korisnickoIme.equals(korisnik.getKorisnickoIme())) {
-				return korisnik;
+	public static void ispisPoruka(boolean trueFalse) {
+		for (SlatkaPoruka sp : poruke) {
+			if (sp.isPotroseno() == trueFalse) {
+				System.out.println(sp);
+			}
+		}
+	}
+
+	public static SlatkaPoruka pretragaPoSifri(String sifra) {
+		for (SlatkaPoruka sp : poruke) {
+			if (sp.getSifra().equalsIgnoreCase(sifra)) {
+				return sp;
 			}
 
 		}
 		return null;
 	}
 
+	public static SlatkaPoruka pretragaPoSifri(String sifra, boolean trueFalse) {
+		for (SlatkaPoruka sp : poruke) {
+			if (sp.getSifra().equalsIgnoreCase(sifra) && sp.isPotroseno() == trueFalse) {
+				return sp;
+			}
+
+		}
+		return null;
+	}
 }

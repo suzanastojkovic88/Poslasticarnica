@@ -7,23 +7,23 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import poslasticarnica.model.Korisnik;
+import poslasticarnica.model.Ukras;
 import poslasticarnica.pomocne_klase.PomocnaKlasa;
 
-public class KorisnikFajl {
+public class UkrasFajl {
 
-	public static ArrayList<Korisnik> korisnici = new ArrayList<Korisnik>();
+	public static ArrayList<Ukras> ukrasi = new ArrayList<Ukras>();
 	public static boolean ocitan = false;
 
 	public static void pisanjeUFajl() {
 		try {
-			String putanja = PomocnaKlasa.putanjaDoFajla("korisnici.txt");
+			String putanja = PomocnaKlasa.putanjaDoFajla("ukrasi.txt");
 			File brisanjeKreiranje = new File(putanja);
 			if (!brisanjeKreiranje.exists())
 				brisanjeKreiranje.createNewFile();
 			PrintWriter pw = new PrintWriter(new FileWriter(putanja));
-			for (Korisnik korisnik : korisnici) {
-				pw.println(korisnik.zaFajl());
+			for (Ukras ukras : ukrasi) {
+				pw.println(ukras.zaFajl());
 			}
 			pw.flush();
 			pw.close();
@@ -37,8 +37,8 @@ public class KorisnikFajl {
 			return;
 		}
 		try {
-			korisnici.clear();
-			String putanja = PomocnaKlasa.putanjaDoFajla("korisnici.txt");
+			ukrasi.clear();
+			String putanja = PomocnaKlasa.putanjaDoFajla("ukrasi.txt");
 			File brisanjeKreiranje = new File(putanja);
 			if (!brisanjeKreiranje.exists()) {
 				System.out.println("Nepostojeci fajl");
@@ -47,25 +47,39 @@ public class KorisnikFajl {
 			BufferedReader br = new BufferedReader(new FileReader(putanja));
 			String string;
 			while ((string = br.readLine()) != null) {
-				Korisnik korisnik = new Korisnik(string);
-				korisnici.add(korisnik);
+				Ukras ukras = new Ukras(string);
+				ukrasi.add(ukras);
 			}
 			ocitan = true;
 			br.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
-	public static Korisnik pretragaPoKorisnickomImenu(String korisnickoIme) {
-		for (Korisnik korisnik : korisnici) {
-			if (korisnickoIme.equals(korisnik.getKorisnickoIme())) {
-				return korisnik;
+	public static void ispisUkrasa(boolean trueFalse) {
+		for (Ukras u : ukrasi) {
+			if (u.isPotroseno() == trueFalse) {
+				System.out.println(u);
+			}
+		}
+	}
+
+	public static Ukras pretragaPoSifri(String sifra) {
+		for (Ukras u : ukrasi) {
+			if (u.getSifra().equalsIgnoreCase(sifra)) {
+				return u;
 			}
 
 		}
 		return null;
 	}
 
+	public static Ukras pretragaPoSifri(String sifra, boolean trueFalse) {
+		for (Ukras u : ukrasi) {
+			if (sifra.equalsIgnoreCase(u.getSifra()) && u.isPotroseno() == trueFalse)
+				return u;
+		}
+		return null;
+	}
 }
