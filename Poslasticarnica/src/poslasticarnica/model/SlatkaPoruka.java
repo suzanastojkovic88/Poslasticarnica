@@ -21,7 +21,7 @@ public class SlatkaPoruka extends Sastojak {
 		super();
 		String tokeni[] = tekst.split("\\|");
 		if (tokeni.length != 8) {
-			System.out.println("Greska pri ocitavanju!");
+			System.out.println("Greska pri ocitavanju slatke poruke");
 
 		}
 

@@ -41,7 +41,7 @@ public class UkrasFajl {
 			String putanja = PomocnaKlasa.putanjaDoFajla("ukrasi.txt");
 			File brisanjeKreiranje = new File(putanja);
 			if (!brisanjeKreiranje.exists()) {
-				System.out.println("Nepostojeci fajl");
+				System.out.println("Nepostojeci fajl (ukrasi)");
 				return;
 			}
 			BufferedReader br = new BufferedReader(new FileReader(putanja));

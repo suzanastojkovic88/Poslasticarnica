@@ -26,7 +26,7 @@ public class Sastojak extends Slatkis {
 		super();
 		String[] tokeni = tekst.split("\\|");
 		if (tokeni.length != 7) {
-			System.out.println("Greska pri ocitavanju!");
+			System.out.println("Greska pri ocitavanju sastojka");
 			return;
 		}
 

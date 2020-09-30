@@ -22,7 +22,7 @@ public class NapravljenSlatkis extends Slatkis {
 		String[] tokeni = tekst.split("\\|");
 
 		if (tokeni.length != 7) {
-			System.out.println("Greska pri ocitavanju!");
+			System.out.println("Greska pri ocitavanju napravljenog slatkisa");
 		}
 
 		this.sifra = tokeni[0];

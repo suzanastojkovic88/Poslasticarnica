@@ -22,14 +22,12 @@ public class Ukras extends Sastojak {
 		String tokeni[] = tekst.split("\\|");
 
 		if (tokeni.length != 8) {
-			System.out.println("Greska pri ocitavanju!");
-
+			System.out.println("Greska pri ocitavanju ukrasa");
 		}
-
 		sifra = tokeni[0];
 		naziv = tokeni[1];
 		opis = tokeni[2];
-
+		
 		if (PomocnaKlasa.isDouble(tokeni[3])) {
 			cena = Double.parseDouble(tokeni[3]);
 		}
@@ -39,12 +37,10 @@ public class Ukras extends Sastojak {
 		if (PomocnaKlasa.isBoolean(tokeni[5])) {
 			potroseno = Boolean.parseBoolean(tokeni[5]);
 		}
-		vrsta = Poslasticarnica.pretragaVrstePoSifri(tokeni[6]);
-
 		if (PomocnaKlasa.isInteger(tokeni[7])) {
 			brojFigurica = Integer.parseInt(tokeni[7]);
 		}
-
+		vrsta = Poslasticarnica.pretragaVrstePoSifri(tokeni[6]);
 	}
 
 	public int getBrojFigurica() {

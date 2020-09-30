@@ -41,7 +41,7 @@ public class SlatkaPorukaFajl {
 			String putanja = PomocnaKlasa.putanjaDoFajla("poruke.txt");
 			File brisanjeKreiranje = new File(putanja);
 			if (!brisanjeKreiranje.exists()) {
-				System.out.println("Nepostojeci fajl");
+				System.out.println("Nepostojeci fajl (slatke poruke)");
 				return;
 			}
 			BufferedReader br = new BufferedReader(new FileReader(putanja));

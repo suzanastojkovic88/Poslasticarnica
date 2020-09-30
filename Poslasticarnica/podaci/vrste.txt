@@ -1,0 +1,5 @@
+v001|Izrada kora|Sa dodacima po zelji|null|false
+v002|Cvrsto filovanje|Fondan, za povrsinu slatkisa|null|false
+v003|Filovanje|Sa dodacima po zelji|null|false
+v004|Vocni dodaci|Kao dekoracija ili u samom slatkisu|null|true
+v005|Dodatni ukras|Izrada figurica o narudzbini|002|false

@@ -41,7 +41,7 @@ public class NapravljenSlatkisFajl {
 			String putanja = PomocnaKlasa.putanjaDoFajla("napravljeniSlatkisi.txt");
 			File obrisiKreiraj = new File(putanja);
 			if (!obrisiKreiraj.exists()) {
-				System.out.println("Nepostojeci fajl");
+				System.out.println("Nepostojeci fajl (napravljeni slatkisi)");
 				return;
 			}
 			BufferedReader br = new BufferedReader(new FileReader(putanja));

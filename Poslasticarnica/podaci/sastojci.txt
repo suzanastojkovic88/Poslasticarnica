@@ -1,0 +1,6 @@
+s001|fil jagoda|krem slag sa aromom vanile i dodatkom sveze jagode|1500.0|1.0|false|v003
+s002|kora sa orasima|belanca, brasno, secer, orasi|600.0|1.0|false|v001
+s003|mesavina jagode, maline i borovnice|sveze voce sa pudingom od vanile|1500.0|1.0|true|v004
+s004|figurica mladenaca|Ukras od pet figurica|3500.0|0.5|false|v005
+
+

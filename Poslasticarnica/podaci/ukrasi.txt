@@ -1,0 +1,3 @@
+u001|Ukras za tortu jednobojni|Figura mladenaca|1000.0|1.0|false|v005|2
+u002|Ukras za tortu visebojni|Likovi iz crtaca|2000.0|1.0|false|v005|5
+

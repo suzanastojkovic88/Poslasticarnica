@@ -1,0 +1,4 @@
+ns001|Carobna torta|Idealan za decije rodjendane|2000.0|1.5|false|s004;
+ns002|Medeno srce|Svaki dan ce uciniti posebnim|900.0|1.0|false|s002;s003;
+ns003|Kremasti uzitak|Za sva vasa slavlja|600.0|0.5|true|s001;s005;s007;
+

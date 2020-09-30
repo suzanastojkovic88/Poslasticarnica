@@ -1,0 +1,2 @@
+p001|Cestitka|Ispisati cestitku povodom rodjendana|500|0.5|false|v005|"Srecan rodjendan, draga koleginice!"
+p002|Naziv|Ispisati naziv firme|500|0.5|false|v005|"Cvecara Orhideja!"

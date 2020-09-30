@@ -41,7 +41,7 @@ public class SastojakFajl {
 			String putanja = PomocnaKlasa.putanjaDoFajla("sastojci.txt");
 			File obrisiKreiraj = new File(putanja);
 			if (!obrisiKreiraj.exists()) {
-				System.out.println("Nepostojeci fajl");
+				System.out.println("Nepostojeci fajl (sastojci)");
 				return;
 			}
 			BufferedReader br = new BufferedReader(new FileReader(putanja));

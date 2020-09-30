@@ -27,7 +27,7 @@ public class VrstaSastojka {
 	public VrstaSastojka(String tekst) {
 		String tokeni[] = tekst.split("\\|");
 		if (tokeni.length != 5) {
-			System.out.println("Greska pri ocitavanju!");
+			System.out.println("Greska pri ocitavanju vrste sastojka");
 
 		}
 

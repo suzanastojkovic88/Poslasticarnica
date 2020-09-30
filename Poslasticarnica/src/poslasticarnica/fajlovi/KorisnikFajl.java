@@ -41,7 +41,7 @@ public class KorisnikFajl {
 			String putanja = PomocnaKlasa.putanjaDoFajla("korisnici.txt");
 			File brisanjeKreiranje = new File(putanja);
 			if (!brisanjeKreiranje.exists()) {
-				System.out.println("Nepostojeci fajl");
+				System.out.println("Nepostojeci fajl (korisnici)");
 				return;
 			}
 			BufferedReader br = new BufferedReader(new FileReader(putanja));

@@ -19,7 +19,7 @@ public class Korisnik {
 		String tokeni[] = tekst.split("\\|");
 
 		if (tokeni.length != 4) {
-			System.out.println("Greska pri ocitavanju!");
+			System.out.println("Greska pri ocitavanju korisnika");
 		}
 		korisnickoIme = tokeni[0];
 		lozinka = tokeni[1];
