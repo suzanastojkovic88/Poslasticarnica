@@ -42,7 +42,7 @@ public class NapravljenSlatkis extends Slatkis {
 		Sastojak s = null;
 		String[] sifreSastojaka = tokeni[6].split("\\;");
 		for (int i = 0; i < sifreSastojaka.length; i++) {
-			s = Poslasticarnica.proveraPostojanjaSastojka(sifreSastojaka[i]);
+			s = Poslasticarnica.pretragaSastojakaPoSifri(sifreSastojaka[i]);
 			if (s == null) {
 				System.out.println("Sastojak ne postoji");
 				System.exit(0);

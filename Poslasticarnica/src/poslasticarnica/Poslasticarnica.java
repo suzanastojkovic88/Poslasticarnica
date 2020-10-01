@@ -46,50 +46,7 @@ public class Poslasticarnica {
 
 	}
 
-	public static Slatkis proveraSastojaka(String sifra) {
-		for (Slatkis slatkis : sviSlatkisi) {
-			if (slatkis instanceof Sastojak || slatkis instanceof Ukras || slatkis instanceof SlatkaPoruka) {
-				if (slatkis.getSifra().equalsIgnoreCase(sifra)) {
-					return slatkis;
-				}
-			}
-		}
-		return null;
-	}
-
-	public static Sastojak proveraPostojanjaSastojka(String sifra, boolean trueFalse) {
-		Sastojak retVal = null;
-		for (Slatkis sastojak : sviSlatkisi) {
-			if (sastojak instanceof Sastojak || (sastojak instanceof SlatkaPoruka) || (sastojak instanceof Ukras)) {
-				if (sifra.equalsIgnoreCase(sastojak.getSifra()) && sastojak.isPotroseno() == trueFalse)
-					retVal = (Sastojak) sastojak;
-			}
-		}
-		return retVal;
-	}
-
-	public static Sastojak proveraPostojanjaSastojka(String sifra) {
-		Sastojak retVal = null;
-		for (Slatkis sastojak : sviSlatkisi) {
-			if (sastojak instanceof Sastojak || (sastojak instanceof SlatkaPoruka) || (sastojak instanceof Ukras)) {
-				if (sifra.equalsIgnoreCase(sastojak.getSifra()))
-					retVal = (Sastojak) sastojak;
-			}
-		}
-		return retVal;
-	}
-
-	public static VrstaSastojka pretragaVrstePoSifri(String sifra) {
-		VrstaSastojka retVal = null;
-		for (int i = 0; i < sveVrste.size(); i++) {
-			VrstaSastojka vs = sveVrste.get(i);
-			if (sifra.equals(vs.getSifra())) {
-				retVal = vs;
-				break;
-			}
-		}
-		return retVal;
-	}
+	// KORISNICI
 
 	public static Korisnik pretragaKorisnika(String korisnickoIme, String lozinka) {
 		for (Korisnik korisnik : sviKorisnici) {
@@ -98,6 +55,14 @@ public class Poslasticarnica {
 			}
 		}
 		return null;
+	}
+
+	public static void cuvanjeKorisnika() {
+		KorisnikFajl.korisnici.clear();
+		for (Korisnik korisnik : sviKorisnici) {
+			KorisnikFajl.korisnici.add((Korisnik) korisnik);
+		}
+		KorisnikFajl.pisanjeUFajl();
 	}
 
 	public static Korisnik logovanje() {
@@ -117,12 +82,17 @@ public class Poslasticarnica {
 		return korisnik;
 	}
 
-	public static void cuvanjeKorisnika() {
-		KorisnikFajl.korisnici.clear();
-		for (Korisnik korisnik : sviKorisnici) {
-			KorisnikFajl.korisnici.add((Korisnik) korisnik);
+//SLATKISI
+
+	public static Slatkis proveraSlatkisa(String sifra) {
+		for (Slatkis slatkis : sviSlatkisi) {
+			if (slatkis instanceof Sastojak || slatkis instanceof Ukras || slatkis instanceof SlatkaPoruka) {
+				if (slatkis.getSifra().equalsIgnoreCase(sifra)) {
+					return slatkis;
+				}
+			}
 		}
-		KorisnikFajl.pisanjeUFajl();
+		return null;
 	}
 
 	public static void cuvanjeSlatkisa() {
@@ -266,6 +236,693 @@ public class Poslasticarnica {
 		ispisSlatkisa();
 	}
 
+	// SASTOJCI
+
+	public static Sastojak pretragaSastojakaPoSifri(String sifra) {
+		Sastojak retVal = null;
+		for (Slatkis s : sviSlatkisi) {
+			if (s instanceof Sastojak || (s instanceof SlatkaPoruka) || (s instanceof Ukras)) {
+				if (sifra.equalsIgnoreCase(s.getSifra()))
+					retVal = (Sastojak) s;
+			}
+		}
+		return retVal;
+	}
+
+	public static Sastojak pretragaSastojakaPoSifri(String sifra, boolean trueFalse) {
+		Sastojak retVal = null;
+		for (Slatkis s : sviSlatkisi) {
+			if (s instanceof Sastojak || (s instanceof SlatkaPoruka) || (s instanceof Ukras)) {
+				if (sifra.equalsIgnoreCase(s.getSifra()) && s.isPotroseno() == trueFalse)
+					retVal = (Sastojak) s;
+			}
+		}
+		return retVal;
+	}
+
+	public static void pretragaSastojakaPoSifri() {
+		System.out.println("Unesite sifru: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		Slatkis retVal = proveraSlatkisa(sifra);
+		if (retVal == null) {
+			System.out.println("Sastojak sa datom sifrom ne postoji");
+		} else {
+			System.out.println(retVal);
+		}
+
+	}
+
+	public static ArrayList<Sastojak> pretragaSastojakaPoNazivu(String naziv) {
+		ArrayList<Sastojak> sastojci = new ArrayList<Sastojak>();
+		for (Slatkis sastojak : sviSlatkisi) {
+
+			if ((sastojak.getNaziv().toLowerCase()).contains(naziv.toLowerCase()) && sastojak instanceof Sastojak) {
+				sastojci.add((Sastojak) sastojak);
+			}
+		}
+		return sastojci;
+	}
+
+	static void pretragaSastojakaPoNazivu() {
+		ArrayList<Sastojak> lista = new ArrayList<Sastojak>();
+		System.out.println("Unesite naziv sastojka: ");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+		lista = pretragaSastojakaPoNazivu(naziv);
+		if (lista.isEmpty()) {
+			System.out.println("Sastojak sa datim nazivom ne postoji");
+		} else {
+			for (Sastojak sastojak : lista) {
+				System.out.println(sastojak);
+			}
+		}
+	}
+
+	public static ArrayList<Sastojak> pretragaSastojakaPoOpseguCene(double pocetnaCena, double krajnjaCena) {
+		ArrayList<Sastojak> lista = new ArrayList<Sastojak>();
+		for (Slatkis sastojak : sviSlatkisi) {
+			if (sastojak.getCena() >= pocetnaCena && sastojak.getCena() <= krajnjaCena
+					&& sastojak instanceof Sastojak) {
+				lista.add((Sastojak) sastojak);
+
+			}
+		}
+		return lista;
+	}
+
+	public static void pretragaSastojakaPoOpseguCene() {
+		ArrayList<Sastojak> retVal = null;
+		System.out.println("Unesi opseg cene");
+		System.out.println("Od: ");
+		Double najniza = PomocnaKlasa.ocitavanjeRealnogBroja();
+		System.out.println("Do: ");
+		Double najvisa = PomocnaKlasa.ocitavanjeRealnogBroja();
+		retVal = pretragaSastojakaPoOpseguCene(najniza, najvisa);
+		if (retVal.size() == 0) {
+			System.out.println("Sastojci sa datim opsegom ne postoje");
+		} else {
+			for (Sastojak sastojak : retVal) {
+				System.out.println(sastojak);
+			}
+		}
+	}
+
+	public static ArrayList<Sastojak> pretragaSastojakaPoOpseguKolicine(double pocetnaKolicina,
+			double krajnjaKolicina) {
+		ArrayList<Sastojak> sastojci = new ArrayList<Sastojak>();
+		for (Slatkis sastojak : sviSlatkisi) {
+			if (sastojak.getKolicina() >= pocetnaKolicina && sastojak.getKolicina() <= krajnjaKolicina
+					&& sastojak instanceof Sastojak) {
+				sastojci.add((Sastojak) sastojak);
+			}
+		}
+		return sastojci;
+	}
+
+	public static void pretragaSastojakaPoOpseguKolicine() {
+		ArrayList<Sastojak> retVal = null;
+		System.out.println("Unesi opseg kolicine");
+		System.out.println("Od: ");
+		double najmanja = PomocnaKlasa.ocitavanjeRealnogBroja();
+		System.out.println("Do: ");
+		double najveca = PomocnaKlasa.ocitavanjeRealnogBroja();
+		retVal = pretragaSastojakaPoOpseguKolicine(najmanja, najveca);
+		if (retVal.isEmpty()) {
+			System.out.println("Sastojci sa datim opsegom ne postoje");
+		} else {
+			for (Sastojak sastojak : retVal) {
+				System.out.println(sastojak);
+			}
+		}
+	}
+
+	public static void pretragaSastojakaPoVrsti() {
+		ArrayList<Sastojak> retVal = null;
+		System.out.println("Unesi sifru vrste: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		retVal = pretragaSastojakaPoVrsti(sifra);
+		if (retVal.isEmpty()) {
+			System.out.println("Sastojak pod datom vrstom ne postoje");
+		} else {
+			for (Sastojak sastojak : retVal) {
+				System.out.println(sastojak);
+			}
+		}
+	}
+
+	public static ArrayList<Sastojak> pretragaSastojakaPoVrsti(String sifra) {
+		ArrayList<Sastojak> sastojci = new ArrayList<Sastojak>();
+		ArrayList<Sastojak> listaodakleSeBira = new ArrayList<Sastojak>();
+		listaodakleSeBira.addAll(SastojakFajl.sastojci);
+		listaodakleSeBira.addAll(UkrasFajl.ukrasi);
+		listaodakleSeBira.addAll(SlatkaPorukaFajl.poruke);
+		for (Sastojak sastojak : listaodakleSeBira) {
+			if ((sastojak.getVrsta().getSifra()).equalsIgnoreCase(sifra)) {
+				sastojci.add(sastojak);
+			}
+		}
+		return sastojci;
+	}
+
+	public static void ispisSastojaka(ArrayList<Sastojak> sastojci) {
+		for (int i = 0; i < sastojci.size(); i++) {
+			System.out.println(sastojci.get(i));
+		}
+	}
+
+	public static ArrayList<Sastojak> nepotroseniSastojci() {
+		ArrayList<Sastojak> lista = new ArrayList<Sastojak>();
+		for (int i = 0; i < sviSlatkisi.size(); i++) {
+			Slatkis slatkis = sviSlatkisi.get(i);
+			if (slatkis instanceof Sastojak) {
+				Sastojak sastojak = ((Sastojak) slatkis);
+				if (sastojak.isPotroseno() == false) {
+					lista.add(sastojak);
+				}
+			}
+		}
+		return lista;
+	}
+
+	public static void unosNovogSastojka() {
+		System.out.println("Unesite sifru:");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (pretragaSlatkisaPoSifri(sifra) != null) {
+			System.out.println("Slatkis sa indeksom " + sifra + " vec postoji");
+			System.out.println("Unesite sifru ponovo");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		System.out.println("Unesite naziv sastojka:");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+		System.out.println("Unesite opis:");
+		String opis = PomocnaKlasa.ocitavanjeTeksta();
+		System.out.println("Unesite cenu:");
+		double cena = PomocnaKlasa.ocitavanjeRealnogBroja();
+		System.out.println("Unesite kolicinu:");
+		double kolicina = PomocnaKlasa.ocitavanjeRealnogBroja();
+		System.out.println("Unesite sifru vrste:");
+		String vrsta = PomocnaKlasa.ocitavanjeTeksta();
+		while (VrstaSastojkaFajl.pretragaPoSifri(vrsta, false) == null) {
+			System.out.println("Ova vrsta ne postoji. Unesite ponovo");
+			vrsta = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		VrstaSastojka vs = VrstaSastojkaFajl.pretragaPoSifri(vrsta, false);
+		boolean potroseno = false;
+		Sastojak sastojak = new Sastojak(sifra, naziv, opis, cena, kolicina, potroseno, vs);
+		sviSlatkisi.add(sastojak);
+	}
+
+	public static void izmenaPodatakaOSastojku(Sastojak sastojak) {
+		System.out.println("Unesi naziv: ");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+		System.out.println("Unesi opis: ");
+		String opis = PomocnaKlasa.ocitavanjeTeksta();
+		System.out.println("Unesi novu cenu: ");
+		double cena = PomocnaKlasa.ocitavanjeRealnogBroja();
+		System.out.println("Unesi novu kolicinu: ");
+		double kolicina = PomocnaKlasa.ocitavanjeRealnogBroja();
+
+		ispisVrstaSastojaka(false);
+		System.out.println("Izaberite novu vrstu: ");
+		String vrsta = PomocnaKlasa.ocitavanjeTeksta();
+		while (VrstaSastojkaFajl.pretragaPoSifri(vrsta, false) == null) {
+			ispisVrstaSastojaka(false);
+			System.out.println("Vrsta sa sifrom " + vrsta + " ne postoji");
+			System.out.println("Unesite ponovo: ");
+			vrsta = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		VrstaSastojka vs = VrstaSastojkaFajl.pretragaPoSifri(vrsta, false);
+		sastojak.setNaziv(naziv);
+		sastojak.setOpis(opis);
+		sastojak.setCena(cena);
+		sastojak.setKolicina(kolicina);
+		sastojak.setVrsta(vs);
+		System.out.println("Izmena uspesno obavljena!");
+	}
+
+	public static void izmenaPodatakaOSastojku() {
+		SastojakFajl.ispisSastojaka(false);
+		System.out.println("Unesite sifru sastojka za izmenu: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (pretragaSastojakaPoSifri(sifra, false) == null) {
+			System.out.println("Sastojak sa sifrom " + sifra + " ne postoji");
+			System.out.println("Ukucajte ponovo: ");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		izmenaPodatakaOSastojku(pretragaSastojakaPoSifri(sifra, false));
+	}
+
+	static void brisanjeSastojka() {
+		SastojakFajl.ispisSastojaka(false);
+		System.out.println("Unesite sifru sastojka: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (VrstaSastojkaFajl.pretragaPoSifri(sifra, false) == null) {
+			System.out.println("Sastojak sa sifrom " + sifra + " ne postoji");
+			System.out.println("Ukucajte sifru ponovo: ");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		Sastojak sastojak = SastojakFajl.pretragaPoSifri(sifra, false);
+		sastojak.setPotroseno(true);
+		System.out.println("Brisanje uspesno obavljeno");
+	}
+
+	// VRSTE SASTOJAKA
+
+	public static void cuvanjeVrste() {
+		VrstaSastojkaFajl.vrste.clear();
+		for (VrstaSastojka vs : sveVrste) {
+			VrstaSastojkaFajl.vrste.add((VrstaSastojka) vs);
+		}
+		VrstaSastojkaFajl.pisanjeUFajl();
+	}
+
+	public static VrstaSastojka pretragaVrstePoSifri(String sifra) {
+		VrstaSastojka retVal = null;
+		for (int i = 0; i < sveVrste.size(); i++) {
+			VrstaSastojka vs = sveVrste.get(i);
+			if (sifra.equals(vs.getSifra())) {
+				retVal = vs;
+				break;
+			}
+		}
+		return retVal;
+	}
+
+	public static void pretragaVrstePoSifri() {
+		VrstaSastojka retVal = null;
+		System.out.println("Unesite sifru: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		retVal = pretragaVrstePoSifri(sifra);
+		if (retVal == null) {
+			System.out.println("Vrsta slatkisa sa datom sifrom ne postoji");
+		} else {
+			System.out.println(retVal);
+		}
+	}
+
+	public static ArrayList<VrstaSastojka> pretragaVrstePoNazivu(String naziv) {
+		ArrayList<VrstaSastojka> lista = new ArrayList<VrstaSastojka>();
+		for (VrstaSastojka vrsta : sveVrste) {
+			if ((vrsta.getNaziv().toLowerCase()).contains(naziv.toLowerCase())) {
+				lista.add(vrsta);
+			}
+		}
+		return lista;
+	}
+
+	public static void pretragaVrstePoNazivu() {
+		ArrayList<VrstaSastojka> lista = new ArrayList<VrstaSastojka>();
+		System.out.println("Unesite naziv: ");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+		lista = pretragaVrstePoNazivu(naziv);
+		if (lista.isEmpty()) {
+			System.out.println("Nijedna vrsta nije pronadjena");
+		} else {
+			for (VrstaSastojka vs : lista) {
+				System.out.println(vs);
+			}
+		}
+	}
+
+	public static void ispisVrstaSastojaka() {
+		for (int i = 0; i < sveVrste.size(); i++) {
+			System.out.println(sveVrste.get(i));
+		}
+	}
+
+	public static void ispisVrstaSastojaka(boolean trueFalse) {
+		for (int i = 0; i < sveVrste.size(); i++) {
+			VrstaSastojka vs = sveVrste.get(i);
+			if (vs.isPotroseno() == trueFalse) {
+				System.out.println(vs);
+			}
+		}
+	}
+
+	public static void unosNoveVrste() {
+		boolean potroseno = false;
+		System.out.println("Unesi sifru:");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (pretragaVrstePoSifri(sifra) != null) {
+			System.out.println("Vrsta sa indeksom " + sifra + " vec postoji");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		System.out.println("Unesi naziv vrste:");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+		System.out.println("Unesi opis:");
+		String opis = PomocnaKlasa.ocitavanjeTeksta();
+		char odluka = PomocnaKlasa.ocitavanjePotvrde("Vrsta ima nadvrstu? ");
+		if (odluka == 'Y') {
+			System.out.println("Unesite sifru nadvrste: ");
+			String sifraNadvrste = PomocnaKlasa.ocitavanjeTeksta();
+			while (pretragaVrstePoSifri(sifraNadvrste) == null) {
+				System.out.println("Vrste je nepostojeca");
+				sifraNadvrste = PomocnaKlasa.ocitavanjeTeksta();
+			}
+			VrstaSastojka izabrano = VrstaSastojkaFajl.pretragaPoSifri(sifraNadvrste, false);
+
+			VrstaSastojka vrsta1 = new VrstaSastojka(sifra, naziv, opis, izabrano, potroseno);
+			sveVrste.add(vrsta1);
+		}
+		if (odluka == 'N') {
+			VrstaSastojka izabrano = null;
+			VrstaSastojka vrsta = new VrstaSastojka(sifra, naziv, opis, izabrano, potroseno);
+			sveVrste.add(vrsta);
+		}
+	}
+
+	static void izmenaPodatakaOVrsti(VrstaSastojka vrsta) {
+		System.out.println("Unesite naziv: ");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+
+		System.out.println("Unesite opis: ");
+		String opis = PomocnaKlasa.ocitavanjeTeksta();
+
+		ispisVrstaSastojaka(false);
+		System.out.println("Izaberite sifru nadkategorije (ukucajte 'nema' ako ne postoji) : ");
+		String nadvrsta = PomocnaKlasa.ocitavanjeTeksta();
+		while (pretragaVrstePoSifri(nadvrsta) == null && !(nadvrsta.equalsIgnoreCase("nema"))) {
+			System.out.println("Vrsta pod sifrom " + nadvrsta + " ne postoji");
+			System.out.println("Ukucajte ponovo");
+			nadvrsta = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		VrstaSastojka v = pretragaVrstePoSifri(nadvrsta);
+		vrsta.setNaziv(naziv);
+		vrsta.setOpis(opis);
+		vrsta.setNadVrsta(v);
+		System.out.println("Izmena uspesno obavljena!");
+	}
+
+	static void izmenaPodatakaOVrsti() {
+		ispisVrstaSastojaka(false);
+		System.out.println("Izaberite vrstu za brisanje: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (pretragaVrstePoSifri(sifra) == null) {
+			System.out.println("Vrsta pod sifrom " + sifra + "ne postoji");
+			System.out.println("Unesite ponovo: ");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		izmenaPodatakaOVrsti(pretragaVrstePoSifri(sifra));
+	}
+
+	static void brisanjeVrsteSastojka() {
+		VrstaSastojkaFajl.ispisVrsta(false);
+		System.out.println("Unesite sifru vrste sastojka: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (pretragaVrstePoSifri(sifra) == null) {
+			System.out.println("Vrsta sa sifrom " + sifra + " ne postoji");
+			System.out.println("Ukucajte ponovo: ");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		VrstaSastojka vs = pretragaVrstePoSifri(sifra);
+		vs.setPotroseno(true);
+		System.out.println("Brisanje vrste pod sifrom: " + sifra + " uspesno obavljeno!");
+	}
+
+//NAPRAVLJENI SLATKISI
+
+	public static void pretragaNapravljenihSlatkisaPoSifri() {
+		System.out.println("Unesite sifru trazenog slatkisa: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		NapravljenSlatkis ns = NapravljenSlatkisFajl.pretragaPoSifri(sifra, false);
+		NapravljenSlatkis nsPotrosen = NapravljenSlatkisFajl.pretragaPoSifri(sifra, true);
+		if (ns == null && nsPotrosen == null) {
+			System.out.println("Napravljen slatkis sa datom sifrom ne postoji ");
+		}
+		if (nsPotrosen == null) {
+			System.out.println(ns);
+		}
+		if (ns == null) {
+			System.out.println(nsPotrosen);
+		}
+	}
+
+	public static void pretragaNapravljenihSlatkisaPoNazivu() {
+		ArrayList<NapravljenSlatkis> ns = new ArrayList<NapravljenSlatkis>();
+		System.out.println("Unesi kljucnu rec: ");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+		ns = NapravljenSlatkisFajl.pretragaPoNazivu(naziv);
+		if (ns.size() == 0) {
+			System.out.println("Napravljen slatkis sa datim nazivom ne postoje ");
+		} else {
+			for (NapravljenSlatkis napravljenSlatkis : ns) {
+				System.out.println(napravljenSlatkis);
+			}
+		}
+	}
+
+	public static void pretragaNapravljenihSlatkisaPoOpseguCene() {
+		ArrayList<NapravljenSlatkis> retVal = null;
+		System.out.println("Unesite opseg cene");
+		System.out.println("Od: ");
+		Double najniza = PomocnaKlasa.ocitavanjeRealnogBroja();
+		System.out.println("Do: ");
+		Double najvisa = PomocnaKlasa.ocitavanjeRealnogBroja();
+		retVal = NapravljenSlatkisFajl.pretragaPoOpseguCene(najniza, najvisa);
+		if (retVal.size() == 0) {
+			System.out.println("Slatkisi pod datim opsegom cene ne postoje");
+		} else {
+			for (NapravljenSlatkis ns : retVal) {
+				System.out.println(ns);
+			}
+		}
+	}
+
+	public static void pretragaNapravljenihSlatkisaPoOpseguKolicine() {
+		ArrayList<NapravljenSlatkis> retVal = null;
+		System.out.println("Unesite opseg kolicine");
+		System.out.println("Od: ");
+		Double najmanja = PomocnaKlasa.ocitavanjeRealnogBroja();
+		System.out.println("Do: ");
+		Double najveca = PomocnaKlasa.ocitavanjeRealnogBroja();
+		retVal = NapravljenSlatkisFajl.pretragaPoOpseguKolicine(najmanja, najveca);
+		if (retVal.size() == 0) {
+			System.out.println("Slatkis sa datim opsegom kolicine ne postoji");
+		} else {
+			for (NapravljenSlatkis ns : retVal) {
+				System.out.println(ns);
+			}
+		}
+	}
+
+	static void ispisNapravljenihSlatkisa(boolean trueFalse) {
+		for (Slatkis s : sviSlatkisi) {
+			if (s instanceof NapravljenSlatkis && s.isPotroseno() == trueFalse) {
+				System.out.println(s);
+			}
+		}
+	}
+
+	public static void unosNapravljenogSlatkisa() {
+		System.out.println("Unesite sifru:");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (pretragaSlatkisaPoSifri(sifra) != null) {
+			System.out.println("Slatkis sa indeksom " + sifra + " vec postoji");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		System.out.println("Unesite naziv novog slatkisa:");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+		System.out.println("Unesite opis:");
+		String opis = PomocnaKlasa.ocitavanjeTeksta();
+		System.out.println("Unesite cenu:");
+		double cena = PomocnaKlasa.ocitavanjeRealnogBroja();
+		System.out.println("Unesite kolicinu:");
+		double kolicina = PomocnaKlasa.ocitavanjeRealnogBroja();
+		ArrayList<Sastojak> sastojci = new ArrayList<Sastojak>();
+		ArrayList<Sastojak> neobrisani = nepotroseniSastojci();
+		boolean prekid = false;
+		while (prekid == false) {
+			ispisSastojaka(neobrisani);
+			System.out.println("Unesite sifru sastojka (ukucajte prekid za prestanjanje unosa):");
+			String odluka = PomocnaKlasa.ocitavanjeTeksta();
+			if (odluka.equalsIgnoreCase("prekid")) {
+				if (sastojci.size() == 0) {
+					prekid = false;
+				} else {
+					prekid = true;
+				}
+			}
+
+			while (proveraSlatkisa(odluka) == null && prekid == false) {
+				ispisSastojaka(neobrisani);
+				if (odluka.equalsIgnoreCase("prekid")) {
+					System.out.println("Niste uneli nijedan sastojak");
+				} else {
+					System.out.println("Sastojak sa sifrom " + odluka + " ne postoji");
+				}
+				System.out.println("Ukucajte ponovo");
+				odluka = PomocnaKlasa.ocitavanjeTeksta();
+			}
+
+			Slatkis slatkis = proveraSlatkisa(odluka);
+			if (slatkis instanceof SlatkaPoruka) {
+				SlatkaPoruka poruka = (SlatkaPoruka) slatkis;
+				sastojci.add(poruka);
+			} else if (slatkis instanceof Ukras) {
+				Ukras ukras = (Ukras) slatkis;
+				sastojci.add(ukras);
+			} else if (slatkis instanceof Sastojak) {
+				Sastojak s = (Sastojak) slatkis;
+				sastojci.add(s);
+			}
+		}
+		boolean obrisano = false;
+		NapravljenSlatkis ns = new NapravljenSlatkis(sifra, naziv, opis, cena, kolicina, obrisano, sastojci);
+		sviSlatkisi.add(ns);
+	}
+
+	public static void izmenaPodatakaONapravljenomSlatkisu(NapravljenSlatkis ns) {
+		System.out.println("Unesite naziv: ");
+		String naziv = PomocnaKlasa.ocitavanjeTeksta();
+
+		System.out.println("Unesite opis: ");
+		String opis = PomocnaKlasa.ocitavanjeTeksta();
+
+		System.out.println("Unesite cenu: ");
+		double cena = PomocnaKlasa.ocitavanjeRealnogBroja();
+
+		System.out.println("Unesite kolicinu: ");
+		double kolicina = PomocnaKlasa.ocitavanjeRealnogBroja();
+
+		ArrayList<Sastojak> sastojci = new ArrayList<Sastojak>();
+		ArrayList<Sastojak> nepotroseni = nepotroseniSastojci();
+		boolean prekid = false;
+		while (prekid == false) {
+			ispisSastojaka(nepotroseni);
+			System.out.println("Unesi sifru sastojka (ukucajte 'prekid' za zaustavljanje unosa):");
+			String odluka = PomocnaKlasa.ocitavanjeTeksta();
+			if (odluka.equalsIgnoreCase("prekid")) {
+				prekid = true;
+			}
+			while (proveraSlatkisa(odluka) == null && prekid == false) {
+				ispisSastojaka(nepotroseni);
+				System.out.println("Sastojak sa sifrom " + odluka + " ne postoji");
+				System.out.println("Ukucajte ponovo");
+				odluka = PomocnaKlasa.ocitavanjeTeksta();
+			}
+
+			Slatkis slatkis = proveraSlatkisa(odluka);
+			if (slatkis instanceof SlatkaPoruka) {
+				SlatkaPoruka sp = (SlatkaPoruka) slatkis;
+				sastojci.add(sp);
+			} else if (slatkis instanceof Ukras) {
+				Ukras ukras = (Ukras) slatkis;
+				sastojci.add(ukras);
+			} else if (slatkis instanceof Sastojak) {
+				Sastojak sastojak = (Sastojak) slatkis;
+				sastojci.add(sastojak);
+			}
+		}
+		ns.setNaziv(naziv);
+		ns.setOpis(opis);
+		ns.setCena(cena);
+		ns.setKolicina(kolicina);
+		if (sastojci.size() != 0) {
+			ns.setSastojci(sastojci);
+		}
+
+		System.out.println("Izmena uspesno obavljena!");
+	}
+
+	public static void izmenaPodatakaONapravljenomSlatkisu() {
+		ispisNapravljenihSlatkisa(false);
+		System.out.println("Unesite sifru slatkisa za izmenu: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (NapravljenSlatkisFajl.pretragaPoSifri(sifra, false) == null) {
+			System.out.println("Slatkis sa sifrom " + sifra + " ne postoji");
+			System.out.println("Ukucajte ponovo: ");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		NapravljenSlatkis ns = NapravljenSlatkisFajl.pretragaPoSifri(sifra, false);
+		izmenaPodatakaONapravljenomSlatkisu(ns);
+	}
+
+	static void brisanjeNapravljenogSlatkisa() {
+		NapravljenSlatkisFajl.ispisNapravljenihSlatkisa(false);
+		System.out.println("Unesi sifru slatkisa za brisanje: ");
+		String sifra = PomocnaKlasa.ocitavanjeTeksta();
+		while (NapravljenSlatkisFajl.pretragaPoSifri(sifra, false) == null) {
+			System.out.println("Slatkis sa sifrom " + sifra + " ne postoji");
+			System.out.println("Ukucajte sifru ponovo: ");
+			sifra = PomocnaKlasa.ocitavanjeTeksta();
+		}
+		NapravljenSlatkis ns = NapravljenSlatkisFajl.pretragaPoSifri(sifra, false);
+		ns.setPotroseno(true);
+		System.out.println("Brisanje slatkisa pod sifrom " + sifra + " uspesno obavljeno!");
+	}
+
+	static void unos() {
+		Meniji.podMeniZaUnosIzmenuIBrisanje();
+		String odluka = PomocnaKlasa.ocitavanjeTeksta();
+		switch (odluka) {
+		case "1":
+			unosNovogSastojka();
+			break;
+		case "2":
+			unosNapravljenogSlatkisa();
+			break;
+		case "3":
+			unosNoveVrste();
+			break;
+		case "4":
+			// unosNovePoruke();
+			break;
+		case "5":
+			// unosNovogUkrasa();
+			break;
+		case "0":
+			break;
+
+		}
+	}
+
+	static void izmena() {
+		Meniji.podMeniZaUnosIzmenuIBrisanje();
+		String odluka = PomocnaKlasa.ocitavanjeTeksta();
+		switch (odluka) {
+		case "1":
+			izmenaPodatakaOSastojku();
+			break;
+		case "2":
+			izmenaPodatakaONapravljenomSlatkisu();
+			break;
+		case "3":
+			izmenaPodatakaOVrsti();
+			break;
+		case "4":
+			// izmenaPodatakaOPoruci();
+			break;
+		case "5":
+			// izmenaPodatakaOUkrasu();
+			break;
+		case "0":
+			break;
+		}
+	}
+
+	static void brisanje() {
+		Meniji.podMeniZaUnosIzmenuIBrisanje();
+		String odluka = PomocnaKlasa.ocitavanjeTeksta();
+		switch (odluka) {
+		case "1":
+			brisanjeSastojka();
+			break;
+		case "2":
+			brisanjeNapravljenogSlatkisa();
+			break;
+		case "3":
+			brisanjeVrsteSastojka();
+			break;
+		case "4":
+			// brisanjePoruke();
+			break;
+		case "5":
+			// brisanjeUkrasa();
+			break;
+		case "0":
+			break;
+		}
+	}
+
 	static void pretragaSlatkisa() {
 		Meniji.podMeniZaPretraguSlatkisa();
 		String odluka = PomocnaKlasa.ocitavanjeTeksta();
@@ -275,13 +932,74 @@ public class Poslasticarnica {
 			break;
 		case "2":
 			pretragaSlatkisaPoNazivu();
-
 			break;
 		case "3":
 			pretragaSlatkisaPoOpseguCene();
 			break;
 		case "0":
 			break;
+		}
+	}
+
+	static void pretragaSastojaka() {
+		Meniji.podMeniZaPretraguSastojaka();
+		String odluka = PomocnaKlasa.ocitavanjeTeksta();
+		switch (odluka) {
+		case "1":
+			pretragaSastojakaPoSifri();
+			break;
+		case "2":
+			pretragaSastojakaPoNazivu();
+			break;
+		case "3":
+			pretragaSastojakaPoOpseguCene();
+			break;
+		case "4":
+			pretragaSastojakaPoOpseguKolicine();
+			break;
+		case "5":
+			pretragaSastojakaPoVrsti();
+			break;
+		case "0":
+			break;
+
+		}
+	}
+
+	static void pretragaNapravljenihSlatkisa() {
+		Meniji.podMeniZaPretraguNapravljenihSlatkisa();
+		String odluka = PomocnaKlasa.ocitavanjeTeksta();
+		switch (odluka) {
+		case "1":
+			pretragaNapravljenihSlatkisaPoSifri();
+			break;
+		case "2":
+			pretragaNapravljenihSlatkisaPoNazivu();
+			break;
+		case "3":
+			pretragaNapravljenihSlatkisaPoOpseguCene();
+			break;
+		case "4":
+			pretragaNapravljenihSlatkisaPoOpseguKolicine();
+			break;
+		case "0":
+			break;
+		}
+	}
+
+	static void pretragaVrstaSastojaka() {
+		Meniji.podMeniZaPretraguVrsta();
+		String odluka = PomocnaKlasa.ocitavanjeTeksta();
+		switch (odluka) {
+		case "1":
+			pretragaVrstePoSifri();
+			break;
+		case "2":
+			pretragaVrstePoNazivu();
+			break;
+		case "0":
+			break;
+
 		}
 	}
 
@@ -293,13 +1011,13 @@ public class Poslasticarnica {
 			pretragaSlatkisa();
 			break;
 		case "2":
-			// pretragaSastojaka();
+			pretragaSastojaka();
 			break;
 		case "3":
-			// pretragaNapravljenihSlatkisa();
+			pretragaNapravljenihSlatkisa();
 			break;
 		case "4":
-			// pretragaVrstaSastojaka();
+			pretragaVrstaSastojaka();
 			break;
 		case "5":
 			ispisSlatkisa();
@@ -312,6 +1030,28 @@ public class Poslasticarnica {
 			break;
 		case "0":
 			break;
+		}
+	}
+
+	static void sortiranje() {
+		Meniji.podMeniZaSortiranje();
+		String odluka = PomocnaKlasa.ocitavanjeTeksta();
+		switch (odluka) {
+		case "1":
+			sortiranjeSlatkisaPoNazivu(-1);
+			break;
+		case "2":
+			sortiranjeSlatkisaPoNazivu(1);
+			break;
+		case "3":
+			sortiranjeSlatkisaPoCeni(-1);
+			break;
+		case "4":
+			sortiranjeSlatkisaPoCeni(1);
+			break;
+		case "0":
+			break;
+
 		}
 	}
 
@@ -343,7 +1083,7 @@ public class Poslasticarnica {
 		System.out.println("-----------------------------------");
 		System.out.println("         POSLASTICARNICA           ");
 		System.out.println("-----------------------------------");
-		
+
 		ocitavanje();
 		String odluka = " ";
 
@@ -356,25 +1096,25 @@ public class Poslasticarnica {
 
 			switch (odluka) {
 			case "1":
-				// unos();
+				unos();
 				break;
 			case "2":
-				// izmena();
+				izmena();
 				break;
 			case "3":
-				// brisanje();
+				brisanje();
 				break;
 			case "4":
 				pretraga();
 				break;
 			case "5":
-				// sortiranje();
+				sortiranje();
 				break;
 			case "6":
 				break;
 			case "7":
 				cuvanjeSlatkisa();
-				// cuvanjeVrste();
+				cuvanjeVrste();
 				break;
 			case "8":
 				ocitavanje();
@@ -385,6 +1125,6 @@ public class Poslasticarnica {
 			}
 		}
 		cuvanjeSlatkisa();
-		// cuvanjeVrste();
+		cuvanjeVrste();
 	}
 }
