@@ -77,8 +77,9 @@ public class UkrasFajl {
 
 	public static Ukras pretragaPoSifri(String sifra, boolean trueFalse) {
 		for (Ukras u : ukrasi) {
-			if (sifra.equalsIgnoreCase(u.getSifra()) && u.isPotroseno() == trueFalse)
+			if (sifra.equalsIgnoreCase(u.getSifra()) && u.isPotroseno() == trueFalse) {
 				return u;
+			}
 		}
 		return null;
 	}
